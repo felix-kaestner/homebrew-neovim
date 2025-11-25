@@ -1,0 +1,76 @@
+name: Update Neovim Nightly Checksum
+
+on:
+  schedule:
+    # Runs every day at 5:30 AM UTC
+    - cron: '30 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-checksum:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Cask Checksums
+        run: |
+          set -e
+
+          echo "Fetching latest nightly release information..."
+          RELEASE_INFO=$(curl -s https://api.github.com/repos/neovim/neovim/releases/tags/nightly)
+
+          ARM64_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "nvim-macos-arm64.tar.gz") | .browser_download_url')
+          X86_64_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "nvim-macos-x86_64.tar.gz") | .browser_download_url')
+
+          if [ -z "$ARM64_URL" ] || [ -z "$X86_64_URL" ]; then
+            echo "Could not find download URLs for one or both architectures."
+            exit 1
+          fi
+
+          echo "Fetching checksum for ARM64..."
+          ARM64_SHA256=$(curl -sL "$ARM64_URL" | shasum -a 256 | awk '{print $1}')
+
+          echo "Fetching checksum for x86_64..."
+          X86_64_SHA256=$(curl -sL "$X86_64_URL" | shasum -a 256 | awk '{print $1}')
+
+          echo "ARM64 SHA256: $ARM64_SHA256"
+          echo "x86_64 SHA256: $X86_64_SHA256"
+
+          CASK_FILE="Casks/neovim-nightly.rb"
+
+          # Use awk to robustly replace the checksums within the if/else block
+          awk -v arm_sha="$ARM64_SHA256" -v intel_sha="$X86_64_SHA256" '
+            BEGIN { in_arm_block = 0 }
+            /if Hardware::CPU.arm\?/{ in_arm_block = 1 }
+            /else/ { in_arm_block = 0 }
+            /sha256/ {
+              if (in_arm_block) {
+                $0 = "    sha256 \"" arm_sha "\""
+              } else {
+                $0 = "    sha256 \"" intel_sha "\""
+              }
+            }
+            { print }
+          ' "$CASK_FILE" > "${CASK_FILE}.tmp" && mv "${CASK_FILE}.tmp" "$CASK_FILE"
+
+          echo "Cask file updated."
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          if ! git diff-index --quiet HEAD; then
+            echo "Changes detected. Committing and pushing..."
+            git add Casks/neovim-nightly.rb
+            git commit -m "chore: Update neovim-nightly checksums"
+            git push
+          else
+            echo "No changes to commit."
+          fi
