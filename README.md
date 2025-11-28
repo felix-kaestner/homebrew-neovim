@@ -11,10 +11,6 @@ homebrew-neovim: A Homebrew tap for installing the latest nightly builds of Neov
 Install the latest **nightly** version of `neovim` using [Homebrew](https://brew.sh/):
 
 ```bash
-# First, tap the repository
-brew tap felix-kaestner/homebrew-neovim https://github.com/felix-kaestner/homebrew-neovim
-
-# Then, install neovim
 brew install --cask felix-kaestner/homebrew-neovim/neovim-nightly
 ```
 
