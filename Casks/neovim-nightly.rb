@@ -22,6 +22,6 @@ cask "neovim-nightly" do
   artifact "nvim-macos-#{arch}/share/icons/hicolor/128x128/apps/nvim.png", target: "#{HOMEBREW_PREFIX}/share/icons/hicolor/128x128/apps/nvim.png"
 
   postflight do
-    system_command "xattr", args: ["-c", staged_path.join("nvim-macos-#{arch}", "bin", "nvim")]
+    system_command "xattr", args: ["-cr", staged_path.join("nvim-macos-#{arch}")]
   end
 end
