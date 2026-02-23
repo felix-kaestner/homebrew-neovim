@@ -2,8 +2,8 @@
 
 homebrew-neovim: A Homebrew tap for installing the latest nightly builds of Neovim.
 
-[![Issues](https://img.shields.io/github/issues/felix-kaestner/homebrew-neovim?color=29b6f6&style=flat-square)](https://github.com/felix-kaestner/yubilock/issues)
-[![License](https://img.shields.io/github/license/felix-kaestner/homebrew-neovim?color=29b6f6&style=flat-square)](https://github.com/felix-kaestner/yubilock/blob/main/LICENSE)
+[![Issues](https://img.shields.io/github/issues/felix-kaestner/homebrew-neovim?color=29b6f6&style=flat-square)](https://github.com/felix-kaestner/homebrew-neovim/issues)
+[![License](https://img.shields.io/github/license/felix-kaestner/homebrew-neovim?color=29b6f6&style=flat-square)](https://github.com/felix-kaestner/homebrew-neovim/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/felix-kaestner/homebrew-neovim/pulls)
 
 ## Installation
