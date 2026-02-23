@@ -1,0 +1,22 @@
+name: Test Cask Installation
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test-install:
+    strategy:
+      matrix:
+        os: [macos-latest, macos-15]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install neovim-nightly from tap
+        run: |
+          brew install --cask felix-kaestner/neovim/neovim-nightly
+
+      - name: Verify installation
+        run: |
+          nvim --version
