@@ -23,5 +23,7 @@ cask "neovim-nightly" do
 
   postflight do
     system_command "xattr", args: ["-cr", staged_path.join("nvim-macos-#{arch}")]
+    system_command "xattr", args: ["-cr", "#{HOMEBREW_PREFIX}/lib/nvim"]
+    system_command "xattr", args: ["-cr", "#{HOMEBREW_PREFIX}/share/nvim"]
   end
 end
