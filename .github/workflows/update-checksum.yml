@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   update-checksum:
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -62,6 +64,7 @@ jobs:
           echo "Cask file updated."
 
       - name: Commit and push if changed
+        id: commit
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -71,6 +74,13 @@ jobs:
             git add Casks/neovim-nightly.rb
             git commit -m "chore: Update neovim-nightly checksums"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "No changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
+
+  test-install:
+    needs: update-checksum
+    if: needs.update-checksum.outputs.changed == 'true'
+    uses: ./.github/workflows/test-install.yml
