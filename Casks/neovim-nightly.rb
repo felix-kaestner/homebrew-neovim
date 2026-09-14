@@ -4,9 +4,9 @@ cask "neovim-nightly" do
   arch = Hardware::CPU.arm? ? "arm64" : "x86_64"
 
   if Hardware::CPU.arm?
-    sha256 "2ae199d86074936ae8bce8aa39c011b358006072e651801e2d0dfe0e831c9cf8"
+    sha256 "265e854284e8d4d27c7064ddac5e61eea1c79f16bd64865090cce69772ccd0b5"
   else
-    sha256 "c816406bf0a978e058760dfb8b40ea5a68de710867c996327bd35db435c6bb27"
+    sha256 "eca381e7623818915fd54b71ffa2aed94de3df814c13c4d8515142f002d0afb6"
   end
 
   url "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-#{arch}.tar.gz"
