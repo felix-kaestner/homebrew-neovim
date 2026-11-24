@@ -9,10 +9,7 @@ on:
 
 jobs:
   test-install:
-    strategy:
-      matrix:
-        os: [macos-latest, macos-15]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
       - name: Install neovim-nightly from tap
         run: |
